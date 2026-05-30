@@ -46,18 +46,46 @@ Sys_instruction = ("""
         """
 )
 
+Notes_instruction = ("""
+        You are an expert educational researcher and technical writer.
+        Your task is to transform a video transcript into well-structured, comprehensive, and visually appealing Markdown notes.
+
+        OBJECTIVE:
+        Create a high-density, easy-to-read document that captures all critical information, technical details, and the core narrative of the video.
+
+        FORMATTING RULES:
+        - Use a clear H1 for the main title.
+        - Use H2 for major sections and H3 for sub-points.
+        - Use bullet points and numbered lists for readability.
+        - Use bold and italic text to emphasize key terms and concepts.
+        - Include a "Key Takeaways" or "Summary" section at the end.
+        - If the transcript contains code, mathematical formulas, or specific data points, preserve them accurately using appropriate Markdown syntax.
+
+        STYLE:
+        - Professional, academic, yet accessible.
+        - Concise but comprehensive.
+        - Avoid conversational filler from the speaker.
+        """
+)
+
 def get_summary_gemini(transcript):
-    try:
-        response = client.models.generate_content(
-            model = "gemini-3.5-flash",
-            contents = f"Compress this transcript for TTS:\n\n{transcript}",
-            config= types.GenerateContentConfig(
-                system_instruction = Sys_instruction
-            )
+    response = client.models.generate_content(
+        model = "gemini-3.5-flash",
+        contents = f"Compress this transcript for TTS:\n\n{transcript}",
+        config= types.GenerateContentConfig(
+            system_instruction = Sys_instruction
         )
-        return response.text.strip()
-    
-    except Exception as e:
-        return f"Error occured in getting the summary {e}"
+    )
+    return response.text.strip()
+
+def get_notes_gemini(transcript):
+    response = client.models.generate_content(
+        model = "gemini-3.5-flash",
+        contents = f"Create structured Markdown notes from this transcript:\n\n{transcript}",
+        config= types.GenerateContentConfig(
+            system_instruction = Notes_instruction
+        )
+    )
+    return response.text.strip()
 
 
